@@ -3,6 +3,7 @@
 
 {% block content %}
 <div class="page-header">Feed</div>
+<div class="page-description">Posts de quem voce segue. Compartilhe o que esta acontecendo.</div>
 
 <form method="post" action="{% url 'create_post' %}">
     {% csrf_token %}

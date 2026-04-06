@@ -3,6 +3,7 @@
 
 {% block content %}
 <div class="page-header">{{ title }} de @{{ profile_user.username }}</div>
+<div class="page-description">Lista de usuarios que {% if title == "Seguidores" %}seguem{% else %}sao seguidos por{% endif %} @{{ profile_user.username }}.</div>
 
 {% for u in user_list %}
 <a href="{% url 'profile' u.username %}" style="text-decoration:none;color:inherit">

@@ -137,6 +137,13 @@ a:hover {
     z-index: 10;
 }
 
+.page-description {
+    padding: 0 20px 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+}
+
 /* Avatar */
 .avatar {
     width: 40px;

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Login - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <h1>Ojoniter</h1>
+        <p>Entre na sua conta</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Usuario</label>
+                <input type="text" name="username" id="id_username" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="id_password">Senha</label>
+                <input type="password" name="password" id="id_password" required>
+            </div>
+            {% if form.errors %}
+            <p class="errorlist"><li>Usuario ou senha incorretos.</li></p>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Entrar</button>
+        </form>
+        <div class="auth-footer">
+            Nao tem conta? <a href="{% url 'register' %}">Cadastre-se</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

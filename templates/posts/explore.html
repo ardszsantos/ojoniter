@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Explorar - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="page-header">Explorar</div>
+
+{% for post in posts %}
+<div class="post">
+    <div class="post-header">
+        <div class="avatar avatar-sm">{{ post.author.get_initial }}</div>
+        <div class="post-author">
+            <a href="{% url 'profile' post.author.username %}" class="display-name">{{ post.author.get_display_name }}</a>
+            <span class="username">@{{ post.author.username }}</span>
+        </div>
+        <span class="post-time">{{ post.created_at|timesince }} atras</span>
+    </div>
+    <div class="post-content">{{ post.content }}</div>
+    <div class="post-actions">
+        <form method="post" action="{% url 'like_toggle' post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'explore' %}">
+            <button type="submit" class="post-action {% if post.pk in liked_ids %}liked{% endif %}">&#9829; {{ post.likes_count }}</button>
+        </form>
+        <a href="{% url 'post_detail' post.pk %}" class="post-action">&#128172; {{ post.comments_count }}</a>
+    </div>
+</div>
+{% empty %}
+<div class="empty-state">
+    <p>Nenhum post por aqui ainda.</p>
+</div>
+{% endfor %}
+{% endblock %}

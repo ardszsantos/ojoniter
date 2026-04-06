@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ojoniter
+      POSTGRES_USER: ojoniter
+      POSTGRES_PASSWORD: ojoniter
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - DATABASE_URL=postgres://ojoniter:ojoniter@db:5432/ojoniter
+
+volumes:
+  pgdata:

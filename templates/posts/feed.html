@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Feed - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="page-header">Feed</div>
+
+<form method="post" action="{% url 'create_post' %}">
+    {% csrf_token %}
+    <div class="compose-box">
+        <div class="avatar">{{ request.user.get_initial }}</div>
+        <div class="compose-input">
+            <textarea name="content" rows="3" maxlength="280" placeholder="O que esta acontecendo?" required></textarea>
+            <div class="compose-footer">
+                <span class="char-count">0/280</span>
+                <button type="submit" class="btn btn-primary btn-sm">Postar</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% for post in posts %}
+<div class="post">
+    <div class="post-header">
+        <div class="avatar avatar-sm">{{ post.author.get_initial }}</div>
+        <div class="post-author">
+            <a href="{% url 'profile' post.author.username %}" class="display-name">{{ post.author.get_display_name }}</a>
+            <span class="username">@{{ post.author.username }}</span>
+        </div>
+        <span class="post-time">{{ post.created_at|timesince }} atras</span>
+        {% if post.author == request.user %}
+        <form method="post" action="{% url 'delete_post' post.pk %}" class="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="post-action" title="Deletar" onclick="return confirm('Deletar este post?')">&#128465;</button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="post-content">{{ post.content }}</div>
+    <div class="post-actions">
+        <form method="post" action="{% url 'like_toggle' post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="/">
+            <button type="submit" class="post-action {% if post.pk in liked_ids %}liked{% endif %}">&#9829; {{ post.likes_count }}</button>
+        </form>
+        <a href="{% url 'post_detail' post.pk %}" class="post-action">&#128172; {{ post.comments_count }}</a>
+    </div>
+</div>
+{% empty %}
+<div class="empty-state">
+    <p>Seu feed esta vazio. Siga pessoas para ver posts aqui!</p>
+    <br>
+    <a href="{% url 'explore' %}" class="btn btn-primary btn-sm">Explorar</a>
+</div>
+{% endfor %}
+
+<script>
+document.querySelector('.compose-box textarea').addEventListener('input', function() {
+    document.querySelector('.char-count').textContent = this.value.length + '/280';
+});
+</script>
+{% endblock %}

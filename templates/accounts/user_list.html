@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} de @{{ profile_user.username }} - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="page-header">{{ title }} de @{{ profile_user.username }}</div>
+
+{% for u in user_list %}
+<a href="{% url 'profile' u.username %}" style="text-decoration:none;color:inherit">
+    <div class="user-item">
+        <div class="avatar avatar-sm">{{ u.get_initial }}</div>
+        <div class="user-item-info">
+            <span class="display-name">{{ u.get_display_name }}</span>
+            <span class="username">@{{ u.username }}</span>
+        </div>
+    </div>
+</a>
+{% empty %}
+<div class="empty-state">
+    <p>Nenhum usuario encontrado.</p>
+</div>
+{% endfor %}
+{% endblock %}

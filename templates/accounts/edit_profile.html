@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Configuracoes - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="page-header">Configuracoes</div>
+
+<div class="settings-page">
+    <h2>Editar perfil</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_display_name">Nome de exibicao</label>
+            {{ form.display_name }}
+            {{ form.display_name.errors }}
+        </div>
+        <div class="form-group">
+            <label for="id_new_password">Nova senha (deixe vazio para manter)</label>
+            {{ form.new_password }}
+        </div>
+        <div class="form-group">
+            <label for="id_confirm_password">Confirmar nova senha</label>
+            {{ form.confirm_password }}
+        </div>
+        {% if form.non_field_errors %}
+        <ul class="errorlist">
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Post de @{{ post.author.username }} - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="page-header">Post</div>
+
+<div class="post">
+    <div class="post-header">
+        <div class="avatar">{{ post.author.get_initial }}</div>
+        <div class="post-author">
+            <a href="{% url 'profile' post.author.username %}" class="display-name">{{ post.author.get_display_name }}</a>
+            <span class="username">@{{ post.author.username }}</span>
+        </div>
+        <span class="post-time">{{ post.created_at|timesince }} atras</span>
+    </div>
+    <div class="post-content" style="font-size:1.1rem">{{ post.content }}</div>
+    <div class="post-actions">
+        <form method="post" action="{% url 'like_toggle' post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'post_detail' post.pk %}">
+            <button type="submit" class="post-action {% if liked %}liked{% endif %}">&#9829; {{ post.likes_count }}</button>
+        </form>
+        <span class="post-action">&#128172; {{ post.comments_count }}</span>
+    </div>
+</div>
+
+<form method="post" action="{% url 'add_comment' post.pk %}" class="comment-form">
+    {% csrf_token %}
+    <div class="avatar avatar-sm">{{ request.user.get_initial }}</div>
+    <textarea name="content" rows="2" maxlength="280" placeholder="Escreva um comentario..." required></textarea>
+    <button type="submit" class="btn btn-primary btn-sm">Comentar</button>
+</form>
+
+{% for comment in comments %}
+<div class="comment">
+    <div class="avatar avatar-sm">{{ comment.author.get_initial }}</div>
+    <div class="comment-body">
+        <div class="comment-header">
+            <a href="{% url 'profile' comment.author.username %}" class="display-name">{{ comment.author.get_display_name }}</a>
+            <span class="username">@{{ comment.author.username }}</span>
+            <span class="time">{{ comment.created_at|timesince }} atras</span>
+        </div>
+        <div class="comment-content">{{ comment.content }}</div>
+    </div>
+</div>
+{% empty %}
+<div class="empty-state">
+    <p>Nenhum comentario ainda.</p>
+</div>
+{% endfor %}
+{% endblock %}

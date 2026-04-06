@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.get_display_name }} - Ojoniter{% endblock %}
+
+{% block content %}
+<div class="page-header">Perfil</div>
+
+<div class="profile-header">
+    <div class="profile-top">
+        <div class="avatar avatar-lg">{{ profile_user.get_initial }}</div>
+        <div class="profile-info">
+            <h2>{{ profile_user.get_display_name }}</h2>
+            <span class="username">@{{ profile_user.username }}</span>
+        </div>
+    </div>
+    <div class="profile-stats">
+        <a href="{% url 'following_list' profile_user.username %}"><strong>{{ profile_user.following_count }}</strong> seguindo</a>
+        <a href="{% url 'followers_list' profile_user.username %}"><strong>{{ profile_user.followers_count }}</strong> seguidores</a>
+        <span style="color: var(--text-muted)"><strong>{{ posts.count }}</strong> posts</span>
+    </div>
+    {% if profile_user != request.user %}
+    <div class="profile-actions">
+        <form method="post" action="{% url 'follow_toggle' profile_user.username %}">
+            {% csrf_token %}
+            {% if is_following %}
+            <button type="submit" class="btn btn-outline btn-sm">Deixar de seguir</button>
+            {% else %}
+            <button type="submit" class="btn btn-primary btn-sm">Seguir</button>
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+{% for post in posts %}
+<div class="post">
+    <div class="post-header">
+        <div class="avatar avatar-sm">{{ post.author.get_initial }}</div>
+        <div class="post-author">
+            <a href="{% url 'profile' post.author.username %}" class="display-name">{{ post.author.get_display_name }}</a>
+            <span class="username">@{{ post.author.username }}</span>
+        </div>
+        <span class="post-time">{{ post.created_at|timesince }} atras</span>
+    </div>
+    <div class="post-content">{{ post.content }}</div>
+    <div class="post-actions">
+        <form method="post" action="{% url 'like_toggle' post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="post-action {% if post.pk in liked_ids %}liked{% endif %}">&#9829; {{ post.likes_count }}</button>
+        </form>
+        <a href="{% url 'post_detail' post.pk %}" class="post-action">&#128172; {{ post.comments_count }}</a>
+    </div>
+</div>
+{% empty %}
+<div class="empty-state">
+    <p>Nenhum post ainda.</p>
+</div>
+{% endfor %}
+{% endblock %}
